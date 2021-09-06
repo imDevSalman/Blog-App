@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FCA769</color>
+    <color name="purple_500">#FF6C00</color>
+    <color name="purple_700">#FC6B04</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="dove_gray">#646464</color>
+    <color name="blaze_orange">#FC6B04</color>
+    <color name="westar">#E7E3DF</color>
+    <color name="atomic_tangerine">#FCA769</color>
+</resources>
