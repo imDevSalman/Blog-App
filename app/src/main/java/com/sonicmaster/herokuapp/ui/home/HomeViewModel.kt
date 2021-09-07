@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import retrofit2.Response
 
 class HomeViewModel(private val repository: PostRepository) : BaseViewModel(repository) {
     private val _status = MutableLiveData<ApiStatus>()
@@ -28,17 +29,35 @@ class HomeViewModel(private val repository: PostRepository) : BaseViewModel(repo
     val singlePost: LiveData<Resource<PostResponse>> = _singlePost
     val delete: LiveData<Resource<ResponseBody>> = _delete
 
-    fun getPosts() = viewModelScope.launch {
+
+    fun getPosts(page: Int) = viewModelScope.launch {
         _status.value = ApiStatus.LOADING
         _posts.value = Resource.Loading
         try {
-            _posts.value = repository.getPosts()
+            _posts.value = repository.getPosts(page)
             _status.value = ApiStatus.DONE
         } catch (e: Exception) {
             _status.value = ApiStatus.ERROR
             _posts.value = null
         }
     }
+
+//    private fun handlePostsResponse(response: Response<PostsResponse>): Resource<PostsResponse> {
+//        if (response.isSuccessful) {
+//            response.body()?.let { result ->
+//                postsPage++
+//                if (postsResponse == null) {
+//                    postsResponse = result
+//                } else {
+//                    val oldPosts = postsResponse?.posts
+//                    val newPosts = result.posts
+//                    oldPosts?.addAll(newPosts)
+//                }
+//                return Resource.Success(postsResponse ?: result)
+//            }
+//        }
+//        return Resource.Failure(false, response.code(), response.errorBody())
+//    }
 
     fun createPost(title: RequestBody, content: RequestBody, image: MultipartBody.Part) =
         viewModelScope.launch {

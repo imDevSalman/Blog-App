@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
@@ -43,6 +44,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, PostReposi
     lateinit var postsAdapter: PostsAdapter
     lateinit var imageView: ImageView
     lateinit var imageUri: Uri
+    var page = 1
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,7 +55,9 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, PostReposi
         binding.postsProgress.visible(false)
         initRecyclerView()
 
-        viewModel.getPosts()
+        page = 1
+        viewModel.getPosts(page)
+
 
         postsAdapter.setOnItemClickListener {
             println("debug: $it")
@@ -70,9 +74,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, PostReposi
                 }
                 is Resource.Success -> {
                     binding.postsProgress.visible(false)
-                    Toast.makeText(requireContext(), it.value.message, Toast.LENGTH_SHORT).show()
                     postsAdapter.differ.submitList(it.value.posts)
-
                 }
                 is Resource.Failure -> {
                     handleApiError(it)
@@ -85,15 +87,16 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, PostReposi
                 }
             }
         })
-
     }
 
     private fun initRecyclerView() {
         postsAdapter = PostsAdapter()
+
         binding.postRecyclerView.apply {
             adapter = postsAdapter
             layoutManager = LinearLayoutManager(activity)
         }
+        setupPagination()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -156,6 +159,19 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, PostReposi
         }
     }
 
+    private fun setupPagination() {
+        println("debug: pagination called")
+        val nestedScrollView = binding.nestedScrollView
+
+        nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (scrollY == v!!.getChildAt(0).measuredHeight - v.measuredHeight) {
+                binding.postsProgress.visible(true)
+                viewModel.getPosts(page++)
+                postsAdapter.notifyDataSetChanged()
+            }
+        })
+    }
+
 
     private fun showDialog() {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.create_post, null)
@@ -174,7 +190,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, PostReposi
         imageView.setImageDrawable(
             ResourcesCompat.getDrawable(
                 resources,
-                R.drawable.blog,
+                R.drawable.imageplace,
                 resources.newTheme()
             )
         )
@@ -232,7 +248,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, PostReposi
                 }
                 is Resource.Success -> {
                     binding.postsProgress.visible(false)
-                    viewModel.getPosts()
                     requireView().snackbar(it.value.message)
                 }
                 is Resource.Failure -> {
@@ -243,5 +258,38 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, PostReposi
             }
         })
     }
+
+    //Pagination
+
+//    var isLoading = true
+//    var pastVisibleItems = 0
+//    var visibleItemCount: Int = 0
+//    var totalItemCount: Int = 0
+//    private val scrollListener = object : RecyclerView.OnScrollListener() {
+//
+//
+//        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//            super.onScrolled(recyclerView, dx, dy)
+//            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+//
+//            if (dy > 0) { //check for scroll down
+//                visibleItemCount = layoutManager.childCount;
+//                totalItemCount = layoutManager.itemCount;
+//                pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+//
+//                if (isLoading) {
+//                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+//                        isLoading = false;
+//                        // Do pagination.. i.e. fetch new data
+//                        page++
+//                        viewModel.getPosts(page)
+//                        postsAdapter.notifyDataSetChanged()
+//
+//                        isLoading = true;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 }

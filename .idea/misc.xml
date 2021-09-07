@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/HerokuApp/app/src/main/res/layout/create_post.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/HerokuApp/app/src/main/res/layout/post_item.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/HerokuApp/app/src/main/res/menu/home_menu.xml" value="0.20520833333333333" />
       </map>
@@ -13,5 +14,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.33" />
+      </ProjectState>
+    </option>
   </component>
 </project>
