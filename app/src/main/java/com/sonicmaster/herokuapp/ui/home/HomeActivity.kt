@@ -7,7 +7,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.sonicmaster.herokuapp.R
 
-class HomeActivity : AppCompatActivity() {
+class
+HomeActivity : AppCompatActivity() {
     lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

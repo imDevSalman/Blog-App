@@ -12,4 +12,6 @@
     <string name="title">Title</string>
     <string name="content">Content</string>
     <string name="select_an_image">Select an image</string>
+    <string name="edit_post">Edit</string>
+    <string name="delete_post">Delete</string>
 </resources>

@@ -1,10 +1,13 @@
 package com.sonicmaster.herokuapp.ui.home
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.inputmethod.InputMethodManager
+import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -24,8 +27,9 @@ import org.json.JSONObject
 
 class PostFragment : BaseFragment<HomeViewModel, FragmentPostBinding, PostRepository>() {
 
-    val args: PostFragmentArgs by navArgs()
+    private val args: PostFragmentArgs by navArgs()
     lateinit var postId: String
+    private var isEditable: Boolean = true
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +52,7 @@ class PostFragment : BaseFragment<HomeViewModel, FragmentPostBinding, PostReposi
                             .load(BASE_URL + it.value.post.imageUrl)
                             .into(image)
                         contentEdt.setText(it.value.post.content)
-                        deletePostButton.visible(it.value.editable)
+                        setHasOptionsMenu(it.value.editable)
                     }
                 }
                 is Resource.Failure -> {
@@ -58,10 +62,6 @@ class PostFragment : BaseFragment<HomeViewModel, FragmentPostBinding, PostReposi
             }
         })
 
-        binding.deletePostButton.setOnClickListener {
-            println("debug: delete button")
-            showDialog()
-        }
 
         viewModel.delete.observe(viewLifecycleOwner, {
             when (it) {
@@ -94,6 +94,42 @@ class PostFragment : BaseFragment<HomeViewModel, FragmentPostBinding, PostReposi
         dialog.show()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.post_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_editPost -> {
+                isEditable = !isEditable
+                if (isEditable) {
+                    item.setIcon(R.drawable.ic_baseline_edit_24)
+                    binding.apply {
+                        titleEdt.isFocusableInTouchMode = false
+                        contentEdt.isFocusableInTouchMode = false
+                        titleEdt.clearFocus()
+                        contentEdt.clearFocus()
+                    }
+                    hideKeyboard(requireContext(), requireView())
+                } else {
+                    item.setIcon(R.drawable.ic_baseline_done_24)
+                    binding.apply {
+                        titleEdt.isFocusableInTouchMode = true
+                        contentEdt.isFocusableInTouchMode = true
+                    }
+                }
+
+            }
+            R.id.action_deletePost -> {
+                showDialog()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun getViewModel() = HomeViewModel::class.java
 
     override fun getFragmentBinding(
@@ -109,6 +145,11 @@ class PostFragment : BaseFragment<HomeViewModel, FragmentPostBinding, PostReposi
         val api = remoteDataSource.buildApi(UserApi::class.java, token)
 
         return PostRepository(api)
+    }
+
+    private fun hideKeyboard(context: Context, view: View) {
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 }

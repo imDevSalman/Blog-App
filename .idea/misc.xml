@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/HerokuApp/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.35555555555555557" />
         <entry key="..\:/AndroidStudioProjects/HerokuApp/app/src/main/res/layout/create_post.xml" value="0.33" />
+        <entry key="..\:/AndroidStudioProjects/HerokuApp/app/src/main/res/layout/fragment_post.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/HerokuApp/app/src/main/res/layout/post_item.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/HerokuApp/app/src/main/res/menu/home_menu.xml" value="0.20520833333333333" />
+        <entry key="..\:/AndroidStudioProjects/HerokuApp/app/src/main/res/menu/post_menu.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>
